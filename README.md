@@ -1,0 +1,1 @@
+cryprotrend-pl--prod

@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/((?!download\\.html|krypto2026-zrozumiec-rynek\\.pdf|robots\\.txt|sitemap\\.xml|ebook-krypto-2026\\.html).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://cryptotrend.pl/sitemap.xml
+
+# Disallow sensitive paths
+Disallow: /api/
+Disallow: /.env
+Disallow: /admin/

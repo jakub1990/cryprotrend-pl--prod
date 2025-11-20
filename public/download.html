@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pobierz e-book - Krypto 2026</title>
+<style>
+body {
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+display: flex;
+justify-content: center;
+align-items: center;
+min-height: 100vh;
+margin: 0;
+background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+}
+.container {
+background: white;
+padding: 48px;
+border-radius: 16px;
+box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+max-width: 500px;
+text-align: center;
+}
+h1 {
+color: #0ea5e9;
+margin-top: 0;
+font-size: 28px;
+}
+p {
+color: #4b5563;
+line-height: 1.6;
+margin: 16px 0;
+}
+.success {
+background: #f0fdf4;
+padding: 20px;
+border-radius: 8px;
+border-left: 4px solid #10b981;
+margin: 24px 0;
+}
+.error {
+background: #fef2f2;
+padding: 20px;
+border-radius: 8px;
+border-left: 4px solid #ef4444;
+margin: 24px 0;
+}
+.download-btn {
+display: inline-block;
+background: #0ea5e9;
+color: white;
+padding: 16px 32px;
+border-radius: 8px;
+text-decoration: none;
+font-weight: 600;
+margin: 24px 0;
+transition: background 0.2s;
+cursor: pointer;
+border: none;
+}
+.download-btn:hover {
+background: #0284c7;
+}
+a {
+color: #0ea5e9;
+text-decoration: none;
+font-weight: 600;
+}
+.download-info {
+font-size: 14px;
+color: #6b7280;
+margin-top: 24px;
+}
+.spinner {
+border: 3px solid #f3f4f6;
+border-top: 3px solid #0ea5e9;
+border-radius: 50%;
+width: 40px;
+height: 40px;
+animation: spin 1s linear infinite;
+margin: 20px auto;
+}
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div id="loading">
+<div class="spinner"></div>
+<p>Sprawdzanie tokenu...</p>
+</div>
+<div id="success" style="display:none;">
+<h1>🎉 Pobieranie rozpoczęte!</h1>
+<div class="success">
+<strong style="color: #047857;">✓ Sukces</strong>
+<p style="margin: 8px 0 0 0; color: #065f46;">Twój e-book jest pobierany...</p>
+</div>
+<p>Jeśli pobieranie nie rozpocznie się automatycznie:</p>
+<a href="/krypto2026-zrozumiec-rynek.pdf" class="download-btn" download>📥 Pobierz e-book ręcznie</a>
+<div id="tokenInfo" class="download-info"></div>
+<p style="margin-top: 32px;">
+<a href="/">← Powrót do strony głównej</a>
+</p>
+</div>
+<div id="error" style="display:none;">
+<h1>❌ Błąd</h1>
+<div class="error">
+<strong style="color: #b91c1c;">✗ Problem</strong>
+<p id="errorMessage" style="margin: 8px 0 0 0; color: #991b1b;"></p>
+</div>
+<p style="margin-top: 32px;">
+<a href="/">← Powrót do strony głównej</a>
+</p>
+</div>
+</div>
+
+<script>
+async function validateAndDownload() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const token = urlParams.get('token');
+
+  if (!token) {
+    showError('Brak tokenu pobierania');
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `https://kiflgoeakkscjotonjzh.supabase.co/functions/v1/ebook-download/validate?token=${token}`,
+      {
+        headers: {
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpZmxnb2Vha2tzY2pvdG9uanpoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMxNDE5ODUsImV4cCI6MjA3ODcxNzk4NX0.tQKlejzh8LYx9tLUSTR1RXJLOmGcwZZ7YtxC8LzN7SA'
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      showError(data.error || 'Nieprawidłowy token');
+      return;
+    }
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('success').style.display = 'block';
+    document.getElementById('tokenInfo').innerHTML = `
+      <p>Pozostałe pobrania: <strong>${data.remaining}</strong> z ${data.max_downloads}</p>
+      <p>Token ważny do: <strong>${new Date(data.expires_at).toLocaleDateString('pl-PL')}</strong></p>
+    `;
+
+    setTimeout(() => {
+      window.location.href = '/krypto2026-zrozumiec-rynek.pdf';
+    }, 1500);
+
+  } catch (error) {
+    showError('Błąd połączenia z serwerem');
+  }
+}
+
+function showError(message) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('error').style.display = 'block';
+  document.getElementById('errorMessage').textContent = message;
+}
+
+window.onload = validateAndDownload;
+</script>
+</body>
+</html>
